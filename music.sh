@@ -3,6 +3,14 @@ set -euo pipefail
 
 volume_step=2
 POSITION=0
+
+run(){
+    if ! pgrep $1 ;
+  then
+    $@&
+  fi
+}
+
 add(){
     TYPE="all\nalbum\nany\nartist\ncomment\ncomposer\ndate\ndisc\nfilename\ngenre\nname\nperformer\ntitle\ntrack"
     TYPE=$(echo "$TYPE" | rofi -dmenu -i -p "Search by")
@@ -18,8 +26,9 @@ add(){
 }
 
 delete(){
-    SONG=$(mpc playlist -f "%id% %artist%-%title%" | rofi -dmenu -p "Songs")
-    mpc del $SONG;
+    SONG=$(mpc playlist -f "%position% %artist%-%title%" | rofi -dmenu -p "Songs")
+	INDEX=$(echo $SONG | cut -d " " -f1)
+    mpc del $INDEX;
     delete;
 }
 
